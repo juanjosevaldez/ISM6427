@@ -58,7 +58,6 @@ function render(data) {
 
   // Current
   const now = info(current.weather_code, current.is_day);
-  document.body.classList.toggle("night", !current.is_day);
   $("temp").textContent = `${r(current.temperature_2m)}°`;
   $("desc").textContent = now.text;
   $("hilo").textContent = `H:${r(daily.temperature_2m_max[0])}°  L:${r(daily.temperature_2m_min[0])}°`;
@@ -130,4 +129,23 @@ $("search").addEventListener("submit", async (e) => {
   }
 });
 
+// Greeting
+const USER_NAME = "Juanjo Valdez";
+function greet() {
+  const h = new Date().getHours();
+  const part = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+  $("greeting").innerHTML = `${part},<strong>${USER_NAME}</strong>`;
+}
+
+// Theme switch: light / dark / system (saved in localStorage)
+const themeButtons = document.querySelectorAll(".theme-switch button");
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeButtons.forEach((b) => b.classList.toggle("active", b.dataset.theme === theme));
+  try { localStorage.setItem("theme", theme); } catch {}
+}
+themeButtons.forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.theme)));
+setTheme(document.documentElement.dataset.theme || "system");
+
+greet();
 loadWeather(DEFAULT);
